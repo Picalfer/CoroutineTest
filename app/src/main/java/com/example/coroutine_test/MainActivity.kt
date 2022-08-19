@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val handler = Handler()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
@@ -25,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        Looper.prepare()
-        Handler() // only after Looper.prepare() we can use Handler constructor on no main thread
 
         binding.progress.isVisible = true
         binding.buttonLoad.isEnabled = false
@@ -45,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadTemperature(city: String, callback: (Int) -> Unit) {
         thread {
-            handler.post {
+            Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
                     this,
                     "Loading temperature for city: $city",
@@ -53,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
             Thread.sleep(5000)
-            handler.post {
+            runOnUiThread { // the same as Handler(Looper.getMainLooper()).post { }
                 callback.invoke(17)
             }
         }
@@ -62,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadCity(callback: (String) -> Unit) {
         thread {
             Thread.sleep(5000)
-            handler.post {
+            Handler(Looper.getMainLooper()).post {
                 callback.invoke("Moscow")
             }
         }
