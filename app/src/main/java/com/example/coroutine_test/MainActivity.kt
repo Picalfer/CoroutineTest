@@ -47,12 +47,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun loadCity(): String {
-        delay(5000)
+        for (i in 1..5) {
+            delay(1000)
+            binding.progress.progress = i * 10
+        }
         return "Moscow"
     }
 
     private suspend fun loadTemperature(city: String): Int {
-
         runOnUiThread {
             Toast.makeText(
                 this,
@@ -60,7 +62,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-        delay(5000)
+        for (i in 1..5) {
+            delay(1000)
+            binding.progress.progress = (i + 5) * 10
+        }
         return 17
     }
 }
